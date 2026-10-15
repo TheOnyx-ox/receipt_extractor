@@ -3,7 +3,7 @@ from pathlib import Path
 from datasets import load_dataset
 
 ds = load_dataset("naver-clova-ix/cord-v2", split="test")
-out = Path("cord_test")
+out = Path("../../data/cord_test")
 out.mkdir(exist_ok=True)
 
 for i, row in enumerate(ds):
