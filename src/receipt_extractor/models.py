@@ -8,7 +8,7 @@ Money = Annotated[Decimal, Field(gt=0,decimal_places=2)]
 class Item(BaseModel):
     name : str
     unit_price: Money  | None = None
-    quantity : int = Field(gt=0, description="Quantity of the item") | None
+    quantity : Decimal = Field(gt=0, description="Quantity of the item", default=Decimal(1))
     line_total = Money
 
 
