@@ -16,4 +16,5 @@ wheels/
 .DS_Store
 
 receipt_extractor/.venv
-src/receipt_extractor/data_unused
+data/data_unused
+scripts/rename_cord_files.py
