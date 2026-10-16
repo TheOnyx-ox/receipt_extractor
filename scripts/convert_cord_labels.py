@@ -6,54 +6,62 @@ from typing import List
 from receipt_extractor.models  import Receipt, Item
 import json
 import os
-ROOT = Path(__file__).resolve().parent.parent / "data" / "cord_test"
 
 import re
 
+ROOT = Path(__file__).resolve().parent.parent / "data" / "cord_test"
 
-# class Receipt(BaseModel):
-#     title: str | None = None
-#     products : List[Item] = Field(min_length=1, description="List of products")
-#     subtotal: Money | None = None
-#     total: Money
-#     cash:  Money | None = None
-#     card: Money | None = None
-#     change: Money | None = None
-#     currency: str = Field(pattern=r"^[A-Z]{3}$", default="None")
-#     tax: Money | None = None
-#     service_charge: Money | None = None
-#     discount: Money | None = None
+SAVE_DIR = Path(__file__).resolve().parent.parent / "data" / "converted_cord"
+
+os.makedirs(f"{SAVE_DIR}", exist_ok=True)
+
+def first_value(value):
+    return value[0] if isinstance(value, list) else value
+
+def to_decimal(value):
+    value = first_value(value)
+    if value is None:
+        return None
+    digits = re.sub(r"\D", "", str(value))
+    return Decimal(digits) if digits else None
+
+
+def as_list(value):
+    if value is None:
+        return []
+    return [value] if isinstance(value, dict) else value
 
 
 for file in ROOT.glob("*.json"):
-    content = json.load(file.open())
+    with file.open() as f:
+        content = json.load(f)
     print(file.stem)
 
+    gt = content.get("gt_parse")
+    sub_total = gt.get("sub_total", {})
+    total = gt.get("total", {})
     items = content.get("gt_parse").get("menu")
 
-    if isinstance(items, dict):
-        items = [items]
-
     products : List[Item] = []
-    for item in items:
+    for item in as_list(items):
         subs = item.get("sub", [])
-        if isinstance(subs, dict):
-            subs = [subs]
+        for subitem in as_list(subs):
+            sub_qty = to_decimal(subitem.get("cnt")) or Decimal(1)
+            sub_price = to_decimal(subitem.get("price")) or Decimal(0)
 
-        for subitem in subs:
-            price = Decimal(re.sub(r"\D", "", subitem.get("price")))
             products.append(Item(
                 name=subitem.get("nm"),
-                quantity=Decimal(re.sub(r"\D", "", subitem.get("cnt"))) if "cnt" in subitem else Decimal(1),
-                line_total=price,
-                unit_price= price / Decimal(subitem["cnt"]) if "cnt" in subitem else None
+                quantity=sub_qty,
+                line_total=sub_price,
+                unit_price= sub_price / sub_qty
             ))
 
+        quantity = to_decimal(item.get("cnt")) or Decimal(1)
+        unit_price = to_decimal(item.get("unitprice"))
+        price = to_decimal(item.get("price"))
 
-        quantity = Decimal(re.sub(r"\D", "", item.get("cnt"))) if "cnt" in item else Decimal(1)
-        unit_price = Decimal(re.sub(r"\D", "", item.get("unitprice"))) if "unitprice" in item else 1
-
-        price = Decimal(re.sub(r"\D", "", item.get("price"))) if "price" in item else quantity * unit_price
+        if price is None:
+            price = quantity * (unit_price or Decimal(1))
 
         products.append(Item(
             name = item.get("nm"),
@@ -62,47 +70,28 @@ for file in ROOT.glob("*.json"):
             unit_price = price / quantity,
         ))
 
-    if "total_price" not in content.get("gt_parse").get("total"):
-        total_price_calculated = Decimal(0)
-        for p in products:
-            total_price_calculated += p.line_total
-    else:
-        total_price_calculated = Decimal(re.sub(r"\D", "", content.get("gt_parse").get("total").get("total_price")))
+    total_price = first_value(total.get("total_price"))
+    total_value = to_decimal(total_price)
 
-        letters = str(re.sub(r"[^A-Za-z]", "", content.get("gt_parse").get("total").get("total_price"))).upper() if any(c.isalpha() for c in content.get("gt_parse").get("total").get("total_price")) else None
+    if total_value is None:
+        total_value = sum((product.line_total for product in  products), Decimal(0))
 
-    sp = content["gt_parse"].get("sub_total", {}).get("subtotal_price")
-    dis = content["gt_parse"].get("sub_total").get("discount_price", "0") if "sub_total" in content["gt_parse"] else "0"
+    currency = None
+    if total_price is not None:
+        currency = re.sub(r"[^A-Za-z]", "", str(total_price)).upper() or None
+
 
     receipt = Receipt(
         products = products,
-
-        subtotal = Decimal(re.sub(r"\D", "", sp[0] if isinstance(sp, list) else sp)) if sp else None,
-
-        tax = Decimal(re.sub(r"\D", "", content.get("gt_parse").get("sub_total").get("tax_price"))) if "sub_total" in content.get("gt_parse") and "tax_price" in content.get("gt_parse").get("sub_total") else None,
-
-
-        total=total_price_calculated,
-
-
-        cash=Decimal(re.sub(r"\D", "", content.get("gt_parse").get("total").get("cashprice"))) if "cashprice" in content.get("gt_parse").get("total") else None,
-
-
-        change=Decimal(re.sub(r"\D", "", content.get("gt_parse").get("total").get("changeprice"))) if "changeprice"  in content.get("gt_parse").get("total") else None,
-
-        currency = letters if letters else None,
-
-        discount = Decimal(re.sub(r"\D", "", dis)) ,
-
-        card = Decimal(re.sub(r"\D", "", content.get("gt_parse").get("total").get("creditcardprice"))) if "creditcardprice"  in content.get("gt_parse").get("total") else Decimal(0),
-
-        service_charge = Decimal(re.sub(r"\D", "", content.get("gt_parse").get("sub_total").get("service_price"))) if "sub_total" in content.get("gt_parse") and "service_price" in content.get("gt_parse").get("sub_total") else None,
-
+        subtotal = to_decimal(sub_total.get("subtotal_price")),
+        tax = to_decimal(sub_total.get("tax_price")),
+        total=total_value,
+        cash = to_decimal(total.get("cashprice")),
+        change = to_decimal(total.get("changeprice")),
+        currency = currency,
+        discount = to_decimal(sub_total.get("discount_price")) or Decimal(0),
+        card = to_decimal(total.get("creditcardprice")) or Decimal(0),
+        service_charge = to_decimal(sub_total.get("service_price")),
     )
-
-
-    SAVE_DIR = Path(__file__).resolve().parent.parent /"data" / "converted_cord"
-
-    os.makedirs(f"{SAVE_DIR}", exist_ok=True)
 
     Path(str(SAVE_DIR) + "/" + f"{file.stem}.json").write_text(receipt.model_dump_json(indent=2))
