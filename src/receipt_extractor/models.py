@@ -13,7 +13,6 @@ class Item(BaseModel):
 
 
 class Receipt(BaseModel):
-    title: str | None = None
     products : List[Item] = Field(min_length=1, description="List of products")
     subtotal: Money | None = None
     total: Money
