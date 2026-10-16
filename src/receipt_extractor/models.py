@@ -3,7 +3,7 @@ from typing import List, Annotated
 
 from pydantic import BaseModel, Field
 
-Money = Annotated[Decimal, Field(gt=0,decimal_places=2)]
+Money = Annotated[Decimal, Field(ge=0,decimal_places=3)]
 
 class Item(BaseModel):
     name : str
@@ -13,12 +13,14 @@ class Item(BaseModel):
 
 
 class Receipt(BaseModel):
+    title: str | None = None
     products : List[Item] = Field(min_length=1, description="List of products")
     subtotal: Money | None = None
     total: Money
     cash:  Money | None = None
+    card: Money | None = None
     change: Money | None = None
-    currency: str = Field(pattern=r"^[A-Z]{3}$", default="None")
+    currency: str | None = Field(pattern=r"^[A-Z]{1,3}$", default=None)
     tax: Money | None = None
     service_charge: Money | None = None
     discount: Money | None = None
