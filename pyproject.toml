@@ -12,6 +12,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "openai>=3.31.0",
     "openapi>=2.0.0",
+    "pandas>=3.0.6",
     "pillow>=12.3.0",
     "pydantic>=2.14.1",
 ]
