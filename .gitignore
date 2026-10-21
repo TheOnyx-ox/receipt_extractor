@@ -19,3 +19,8 @@ receipt_extractor/.venv
 data/data_unused
 data/data_unused_converted
 scripts/rename_cord_files.py
+
+
+data/cord_predictions/
+data/logs/
+data/validations/
