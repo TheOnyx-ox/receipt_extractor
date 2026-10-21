@@ -20,21 +20,30 @@ PRICE_CACHED_IN = 0.125
 ROOT = Path(__file__).resolve().parent.parent.parent
 LOG_PATH = ROOT / 'data' / 'logs'
 
-def construct_request(image: Path):
-    b64 = base64.b64encode(open(image, "rb").read()).decode()
-    return [
-        {
-            "role": "system",
-            "content": "You are a helpful assistant who needs to extract information from the provided receipt"
+SYSTEM_PROMPT = """You extract structured data from a photo of a receipt.
+Rules:
+- Copy values exactly as printed. Never recalculate, correct or "fix" any number, even if the math looks wrong.
+- Write every amount as a plain number with no thousands separators and no currency symbol (for example 43636, not "43.636" or "43,636"). Use a dot only for real decimals (12.50).
+- total is the final amount due after tax and service charge (labels like TOTAL, GRAND TOTAL, AMOUNT DUE). It is not the cash handed over. Put the cash given in cash, a card payment in card, and the money returned in change.
+- subtotal is the sum before tax, only if printed. tax, service_charge and discount are the printed amounts, not percentages.
+- For each product: name as printed, unit_price (price of one unit), quantity (default 1 if not shown), line_total (price for that line).
+- If a field is not on the receipt, return null. Do not guess or infer it.
+- Include only purchased items in products, not totals, tax or payment lines.
+"""
 
-        },
+
+def construct_request(image: Path):
+    b64 = base64.b64encode(image.read_bytes()).decode()
+    return [
+        {"role": "system", "content": SYSTEM_PROMPT},
         {
-        "role": "user",
-        "content": [
-            {"type": "input_image",
-            "image_url": f"data:image/jpeg;base64,{b64}"} ,
-        ]
-    }]
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": "Extract the receipt data."},
+                {"type": "input_image", "image_url": f"data:image/jpeg;base64,{b64}"},
+            ],
+        },
+    ]
 
 def send_receipt(image: Path):
     request = construct_request(image)
