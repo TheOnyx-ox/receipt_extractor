@@ -13,6 +13,9 @@ CONVERTED_CORD = ROOT / "data" / "converted_cord"
 VALIDATION_PATH = ROOT / 'data' / 'validations'
 
 
+LIMIT = 10
+
+
 
 def check_empty(value):
     if value == 'null' or value == False or value is None or value == "" or value == [] or value == " " or value == "-" or value == "0":
@@ -121,29 +124,35 @@ def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json = Non
 def main():
    VALIDATION_PATH.mkdir(parents=True, exist_ok=True)
    overall_model_accuracy = 0
+   processed = 0
 
-   for receipt_path in sorted(CORD_TEST.rglob("*")):
-       if receipt_path.as_uri().endswith(".jpg"):
+   for receipt_path in sorted(CORD_TEST.rglob("*.jpg")) [:LIMIT]:
+       prediction_path = CORD_PREDICTIONS / f'{receipt_path.stem}.json'
+       if prediction_path.exists():
+           receipt = Receipt.model_validate_json(prediction_path.read_text())
+       else:
            receipt = extract_receipt(CORD_TEST / f'{receipt_path.stem}.jpg', CORD_PREDICTIONS)
 
 
-           with open(CONVERTED_CORD / f'{receipt_path.stem}.json') as json_file:
-               data = json.load(json_file)
-               ground_truth = Receipt.model_validate(data)
+       with open(CONVERTED_CORD / f'{receipt_path.stem}.json') as json_file:
+           data = json.load(json_file)
+           ground_truth = Receipt.model_validate(data)
 
-           x, dct = validate_receipt(receipt, ground_truth, f'{receipt_path.stem}.json')
-           overall_model_accuracy += x
+       x, dct = validate_receipt(receipt, ground_truth, f'{receipt_path.stem}.json')
+       overall_model_accuracy += x
+       processed += 1
 
-           with open(VALIDATION_PATH / f'{receipt_path.stem}.json', 'w') as json_file:
-               json_file.write(json.dumps(dct, indent=2))
+       with open(VALIDATION_PATH / f'{receipt_path.stem}.json', 'w') as json_file:
+           json_file.write(json.dumps(dct, indent=2))
 
 
-   overall_model_accuracy = overall_model_accuracy / len(sorted(CORD_TEST.rglob("*.json")))
+   overall_model_accuracy = overall_model_accuracy / processed if processed else 0
 
    with open(VALIDATION_PATH / 'model_accuracy.json', 'w') as outfile:
         outfile.write(
             json.dumps({
                 'average_accuracy' : overall_model_accuracy,
+                'processed' : processed,
             }, indent=2)
         )
 
