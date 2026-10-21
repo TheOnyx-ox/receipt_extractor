@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "name": "Propolis Cair",
+      "unit_price": "156000",
+      "quantity": "1",
+      "line_total": "156000"
+    }
+  ],
+  "subtotal": null,
+  "total": "156000",
+  "cash": "156000",
+  "card": "0",
+  "change": "0",
+  "currency": null,
+  "tax": null,
+  "service_charge": null,
+  "discount": "0"
+}

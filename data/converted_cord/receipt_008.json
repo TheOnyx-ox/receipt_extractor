@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "name": "BANABERRY FRESH CREAM CAK",
+      "unit_price": "230000",
+      "quantity": "1",
+      "line_total": "230000"
+    }
+  ],
+  "subtotal": null,
+  "total": "230000",
+  "cash": "230000",
+  "card": "0",
+  "change": "0",
+  "currency": null,
+  "tax": null,
+  "service_charge": null,
+  "discount": "0"
+}

@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "name": "Bumbu Kaldu Ayam 1",
+      "unit_price": "36000",
+      "quantity": "1",
+      "line_total": "36000"
+    }
+  ],
+  "subtotal": "36000",
+  "total": "36000",
+  "cash": "50000",
+  "card": "0",
+  "change": "14000",
+  "currency": null,
+  "tax": null,
+  "service_charge": null,
+  "discount": "0"
+}

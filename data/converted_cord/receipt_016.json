@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "name": "AMBUSH DBL CHS",
+      "unit_price": "15000",
+      "quantity": "4",
+      "line_total": "60000"
+    },
+    {
+      "name": "AMBUSH CHS BUR",
+      "unit_price": "10000",
+      "quantity": "10",
+      "line_total": "100000"
+    }
+  ],
+  "subtotal": "160000",
+  "total": "176000",
+  "cash": null,
+  "card": "0",
+  "change": null,
+  "currency": null,
+  "tax": "16000",
+  "service_charge": null,
+  "discount": "0"
+}

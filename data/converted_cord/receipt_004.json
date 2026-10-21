@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "name": "ADD CHICKEN BOX",
+      "unit_price": "909",
+      "quantity": "1",
+      "line_total": "909"
+    },
+    {
+      "name": "Kupon 15",
+      "unit_price": "100000",
+      "quantity": "1",
+      "line_total": "100000"
+    }
+  ],
+  "subtotal": "100909",
+  "total": "111000",
+  "cash": "111000",
+  "card": "0",
+  "change": null,
+  "currency": null,
+  "tax": "10091",
+  "service_charge": null,
+  "discount": "0"
+}

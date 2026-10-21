@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "name": "COOKIE DOH SAUCES",
+      "unit_price": "0",
+      "quantity": "1",
+      "line_total": "0"
+    },
+    {
+      "name": "NATA DE COCO",
+      "unit_price": "0",
+      "quantity": "1",
+      "line_total": "0"
+    },
+    {
+      "name": "[REG] BLACK SAKURA",
+      "unit_price": "45455",
+      "quantity": "1",
+      "line_total": "45455"
+    }
+  ],
+  "subtotal": "45455",
+  "total": "50000",
+  "cash": null,
+  "card": "50000",
+  "change": null,
+  "currency": null,
+  "tax": "4545",
+  "service_charge": null,
+  "discount": "0"
+}
