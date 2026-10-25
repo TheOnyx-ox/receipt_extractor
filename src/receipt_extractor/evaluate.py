@@ -1,26 +1,27 @@
 import json
-from typing import List
 
 from models import Receipt, Item
 from pathlib import Path
 from difflib import SequenceMatcher
-from extractor import extract_receipt
+from extractor import extract_with_retry
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 CORD_TEST = ROOT / "data" / "cord_test"
 CORD_PREDICTIONS = ROOT / "data" / "cord_predictions"
+CORD_RETRY = ROOT / "data" / "cord_predictions_retry"
 CONVERTED_CORD = ROOT / "data" / "converted_cord"
-VALIDATION_PATH = ROOT / 'data' / 'validations'
-
+VAL_FIRST = ROOT / "data" / "validations_first"
+VAL_FINAL = ROOT / "data" / "validations_final"
 
 LIMIT = 10
-
+FIELDS = ["subtotal", "total", "cash", "card", "change", "tax", "service_charge", "discount"]
 
 
 def check_empty(value):
     if value == 'null' or value == False or value is None or value == "" or value == [] or value == " " or value == "-" or value == "0":
         return True
     return value
+
 
 def increase_score(score, overall_acc, prop):
     overall_acc[prop] = True
@@ -43,7 +44,8 @@ def get_max_similarity(indexes):
 
     return max_idx
 
-def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json = None):
+
+def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json=None):
     score = 0
     overall_acc = dict()
     overall_acc["receipt"] = receipt_json
@@ -76,7 +78,7 @@ def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json = Non
 
             used.add(max_sim)
 
-            score += 1 # for name
+            score += 1  # for name
             product_acc['name'] = True
             product_acc['matched_name'] = indexes[max_sim]['name']
 
@@ -90,7 +92,6 @@ def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json = Non
             product_acc['line_total'] = indexes[max_sim]['line_total']
 
         count += 1
-
 
     score, overall_acc = increase_score(score, overall_acc, "subtotal") if check_empty(receipt.subtotal) == check_empty(ground_truth.subtotal) else keep_score(score, overall_acc, "subtotal")
 
@@ -108,54 +109,45 @@ def validate_receipt(receipt: Receipt, ground_truth: Receipt, receipt_json = Non
 
     score, overall_acc = increase_score(score, overall_acc, "discount") if check_empty(receipt.discount) == check_empty(ground_truth.discount) else keep_score(score, overall_acc, "discount")
 
-
     num_products = max(len(receipt.products), len(ground_truth.products))
 
     overall_acc["num_products"] = num_products
     overall_acc["score"] = score
 
-
-    final_score = (score * 100) / (len(Receipt.model_fields.keys()) - 2 + (num_products * len(Item.model_fields.keys()))) # CORD doesn't have currency field (-1), and -1 for products field
+    final_score = (score * 100) / (len(Receipt.model_fields.keys()) - 2 + (num_products * len(Item.model_fields.keys())))  # CORD doesn't have currency field (-1), and -1 for products field
 
     overall_acc["accuracy"] = final_score
 
     return final_score, overall_acc
 
+
+def write_report(folder, stem, receipt, ground_truth):
+    folder.mkdir(parents=True, exist_ok=True)
+    if receipt is None:  # both attempts failed: score as zero
+        report = {"receipt": f"{stem}.json", "failed": True, "accuracy": 0, **{f: False for f in FIELDS}}
+        accuracy = 0
+    else:
+        accuracy, report = validate_receipt(receipt, ground_truth, f"{stem}.json")
+    (folder / f"{stem}.json").write_text(json.dumps(report, indent=2))
+    return accuracy
+
+
 def main():
-   VALIDATION_PATH.mkdir(parents=True, exist_ok=True)
-   overall_model_accuracy = 0
-   processed = 0
+    totals = {"first": 0, "final": 0}
+    processed = 0
 
-   for receipt_path in sorted(CORD_TEST.rglob("*.jpg")) [:LIMIT]:
-       prediction_path = CORD_PREDICTIONS / f'{receipt_path.stem}.json'
-       if prediction_path.exists():
-           receipt = Receipt.model_validate_json(prediction_path.read_text())
-       else:
-           receipt = extract_receipt(CORD_TEST / f'{receipt_path.stem}.jpg', CORD_PREDICTIONS)
+    for image in sorted(CORD_TEST.glob("*.jpg")): # [:LIMIT]
+        stem = image.stem
+        ground_truth = Receipt.model_validate_json((CONVERTED_CORD / f"{stem}.json").read_text())
+        first, final, record = extract_with_retry(image, CORD_PREDICTIONS, CORD_RETRY)
+        totals["first"] += write_report(VAL_FIRST, stem, first, ground_truth)
+        totals["final"] += write_report(VAL_FINAL, stem, final, ground_truth)
+        processed += 1
 
-
-       with open(CONVERTED_CORD / f'{receipt_path.stem}.json') as json_file:
-           data = json.load(json_file)
-           ground_truth = Receipt.model_validate(data)
-
-       x, dct = validate_receipt(receipt, ground_truth, f'{receipt_path.stem}.json')
-       overall_model_accuracy += x
-       processed += 1
-
-       with open(VALIDATION_PATH / f'{receipt_path.stem}.json', 'w') as json_file:
-           json_file.write(json.dumps(dct, indent=2))
-
-
-   overall_model_accuracy = overall_model_accuracy / processed if processed else 0
-
-   with open(VALIDATION_PATH / 'model_accuracy.json', 'w') as outfile:
-        outfile.write(
-            json.dumps({
-                'average_accuracy' : overall_model_accuracy,
-                'processed' : processed,
-            }, indent=2)
-        )
-
+    summary = {name: (total / processed if processed else 0) for name, total in totals.items()}
+    summary["processed"] = processed
+    (VAL_FINAL / "model_accuracy.json").write_text(json.dumps(summary, indent=2))
+    print(summary)
 
 
 if __name__ == "__main__":
