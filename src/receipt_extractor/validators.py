@@ -92,9 +92,27 @@ def main():
             key = "skipped" if ok is None else "passed" if ok else "failed"
             counts[name][key] += 1
         if result["issues"]:
-            print(path.stem, result["issues"])
+            print(f"\n{path.stem}: {', '.join(result['issues'])}")
+            print(explain(receipt, result["issues"]))
 
+    print("\nSummary:")
     print(json.dumps(counts, indent=2))
+
+
+
+def explain(receipt, issues):
+    lines = []
+    if "validate_subtotal" in issues:
+        s = sum(p.line_total for p in receipt.products)
+        lines.append(f"- line totals sum to {s} but subtotal is {receipt.subtotal}")
+    if "validate_total" in issues:
+        expected = receipt.subtotal + (receipt.tax or 0) + (receipt.service_charge or 0) - (receipt.discount or 0)
+        lines.append(f"- subtotal + tax + service charge - discount = {expected} but total is {receipt.total}")
+    if "validate_change" in issues:
+        lines.append(f"- cash - total = {receipt.cash - receipt.total} but change is {receipt.change}")
+    if "validate_products" in issues:
+        lines.append("- for some items unit_price x quantity does not equal line_total")
+    return "\n".join(lines)
 
 
 if __name__ == '__main__':
