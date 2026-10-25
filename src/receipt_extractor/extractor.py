@@ -20,15 +20,28 @@ PRICE_CACHED_IN = 0.125
 ROOT = Path(__file__).resolve().parent.parent.parent
 LOG_PATH = ROOT / 'data' / 'logs'
 
+
 SYSTEM_PROMPT = """You extract structured data from a photo of a receipt.
-Rules:
+General:
 - Copy values exactly as printed. Never recalculate, correct or "fix" any number, even if the math looks wrong.
-- Write every amount as a plain number with no thousands separators and no currency symbol (for example 43636, not "43.636" or "43,636"). Use a dot only for real decimals (12.50).
-- total is the final amount due after tax and service charge (labels like TOTAL, GRAND TOTAL, AMOUNT DUE). It is not the cash handed over. Put the cash given in cash, a card payment in card, and the money returned in change.
-- subtotal is the sum before tax, only if printed. tax, service_charge and discount are the printed amounts, not percentages.
-- For each product: name as printed, unit_price (price of one unit), quantity (default 1 if not shown), line_total (price for that line).
-- If a field is not on the receipt, return null. Do not guess or infer it.
+- If a field is not on the receipt, return null. Do not guess.
 - Include only purchased items in products, not totals, tax or payment lines.
+
+Amounts:
+- Write every amount as a plain number with no thousands separators and no currency symbol.
+- A "." or "," followed by exactly three digits is a thousands separator: 82,000 and 82.000 both mean 82000; 174.600 means 174600. Never drop those digits.
+- Use a dot only for real decimals (12.50). Receipts in Indonesian rupiah (Rp) have no decimals.
+- Write discount, tax and service_charge as positive numbers, even if printed with a minus sign.
+
+Fields:
+- total is the final amount due after tax and service charge (TOTAL, GRAND TOTAL, AMOUNT DUE). It is not the cash handed over.
+- Put cash given in cash, a card payment in card, and money returned in change.
+- subtotal is the sum before tax, only if printed. tax, service_charge and discount are the printed amounts, not percentages.
+- currency is the ISO code if a symbol or code is printed (Rp -> IDR), otherwise null.
+
+Products:
+- name as printed, quantity (1 if not shown).
+- The price printed at the end of an item line is its line_total. Set unit_price only if a per-unit price is printed; otherwise null. Never multiply by quantity.
 """
 
 
