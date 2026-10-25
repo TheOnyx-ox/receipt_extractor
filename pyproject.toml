@@ -15,6 +15,7 @@ dependencies = [
     "pandas>=3.0.6",
     "pillow>=12.3.0",
     "pydantic>=2.14.1",
+    "typer>=0.27.3",
 ]
 
 [project.scripts]
@@ -23,3 +24,12 @@ receipt-extractor = "receipt_extractor:main"
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src/receipt_extractor"]
+testpaths = ["tests"]
