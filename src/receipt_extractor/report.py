@@ -48,8 +48,7 @@ def main():
 
     out_dir = ROOT / "docs"
     out_dir.mkdir(exist_ok=True)
-    (out_dir / "accuracy.md").write_text(table + "\n")
-
+    (out_dir / f"accuracy_{folder.name}.md").write_text(table + "\n")
 
 if __name__ == "__main__":
     main()
