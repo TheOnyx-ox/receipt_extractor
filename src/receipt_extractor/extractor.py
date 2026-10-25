@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from models import Receipt
 import json
 import os
-import pandas as pd
+from pydantic import ValidationError
+from validators import validate, explain
 
 load_dotenv()
 
@@ -45,52 +46,91 @@ Products:
 """
 
 
-def construct_request(image: Path):
+def construct_request(image: Path, feedback: str | None = None):
     b64 = base64.b64encode(image.read_bytes()).decode()
+    content = [
+        {"type": "input_text", "text": "Extract the receipt data."},
+        {"type": "input_image", "image_url": f"data:image/jpeg;base64,{b64}"},
+    ]
+    if feedback:
+        content.append({"type": "input_text", "text": feedback})
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": "Extract the receipt data."},
-                {"type": "input_image", "image_url": f"data:image/jpeg;base64,{b64}"},
-            ],
-        },
+        {"role": "user", "content": content},
     ]
 
-def send_receipt(image: Path):
-    request = construct_request(image)
-    result = client.responses.parse(
-        model = "gpt-4o-mini",
+
+def send_receipt(image: Path, feedback: str | None = None):
+    request = construct_request(image, feedback)
+    return client.responses.parse(
+        model="gpt-4o-mini",
         input=request,
-        text_format=Receipt
+        text_format=Receipt,
     )
 
-    return result
 
-def extract_receipt(image: Path, save_to: Path):
+def extract_receipt(image: Path, save_to: Path, feedback: str | None = None):
     start_time = time.perf_counter()
-    result = send_receipt(image)
+    result = send_receipt(image, feedback)
     end_time = time.perf_counter()
 
-    os.makedirs(f"{save_to}", exist_ok=True)
-    os.makedirs(f"{LOG_PATH}", exist_ok=True)
+    if result.output_parsed is None:
+        raise ValueError(f"Model returned no parsed output for {image.name}")
 
-    Path(save_to.resolve() / f"{image.stem}.json").write_text(result.output_parsed.model_dump_json(indent=2))
+    os.makedirs(save_to, exist_ok=True)
+    os.makedirs(LOG_PATH, exist_ok=True)
 
+    (save_to / f"{image.stem}.json").write_text(result.output_parsed.model_dump_json(indent=2))
+
+    usage = result.usage
+    cached = usage.input_tokens_details.cached_tokens
     entry = {
-        "receipt" : image.stem,
-        'model': 'gpt-4o-mini',
-        "input_tokens": result.usage.input_tokens,
-        "output_tokens": result.usage.output_tokens,
-        "total_tokens": result.usage.total_tokens,
-        "latency_sec" : round(end_time - start_time, 2),
-        'cost_usd': (result.usage.input_tokens * PRICE_IN + result.usage.output_tokens * PRICE_OUT + result.usage.input_tokens_details.cached_tokens * PRICE_CACHED_IN) / 1_000_000
-
+        "receipt": image.stem,
+        "attempt": 2 if feedback else 1,
+        "model": "gpt-4o-mini",
+        "input_tokens": usage.input_tokens,
+        "output_tokens": usage.output_tokens,
+        "total_tokens": usage.total_tokens,
+        "latency_sec": round(end_time - start_time, 2),
+        "cost_usd": ((usage.input_tokens - cached) * PRICE_IN
+                     + cached * PRICE_CACHED_IN
+                     + usage.output_tokens * PRICE_OUT) / 1_000_000,
     }
-    with open(LOG_PATH / f'calls.jsonl', 'a') as f:
-        f.write(json.dumps(entry) + '\n')
+    with open(LOG_PATH / "calls.jsonl", "a") as f:
+        f.write(json.dumps(entry) + "\n")
     return result.output_parsed
 
 
+def extract_with_retry(image: Path, first_dir: Path, retry_dir: Path):
+    record = {"receipt": image.stem, "retried": False}
+    first, problems = None, None
 
+    try:
+        first = extract_receipt(image, first_dir)
+        issues = validate(first)["issues"]
+        record["issues_before"] = issues
+        if issues:
+            problems = ("Your previous answer was:\n" + first.model_dump_json() + "\nIt failed these checks:\n" + explain(first, issues))
+    except (ValidationError, ValueError) as e:
+        record["issues_before"] = ["parse_error"]
+        problems = f"Your previous answer could not be parsed:\n{e}"
+
+    final = first
+    if problems:
+        record["retried"] = True
+        feedback = (problems + "\nLook at the receipt again and correct only the values you misread. If the receipt itself does not add up, keep the printed values.")
+        try:
+            second = extract_receipt(image, retry_dir, feedback)
+            issues_after = validate(second)["issues"]
+            record["issues_after"] = issues_after
+            record["fixed"] = not issues_after
+            if first is None or len(issues_after) < len(record["issues_before"]):
+                final = second
+        except (ValidationError, ValueError):
+            record["issues_after"] = ["parse_error"]
+            record["fixed"] = False
+
+    os.makedirs(LOG_PATH, exist_ok=True)
+    with open(LOG_PATH / "retries.jsonl", "a") as f:
+        f.write(json.dumps(record) + "\n")
+    return final, record
