@@ -22,4 +22,4 @@ scripts/rename_cord_files.py
 
 
 .venv/
-data/
+data
