@@ -1,0 +1,35 @@
+{
+  "receipt": "receipt_019.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "5001-Corn Flakes Cookies"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "5003-Chokoreto Cookies"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "6002-Plastic Bag Medium"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 3,
+  "score": 20,
+  "accuracy": 100.0
+}

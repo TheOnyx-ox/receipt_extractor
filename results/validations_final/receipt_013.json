@@ -1,0 +1,28 @@
+{
+  "receipt": "receipt_013.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "[LG] BLACK SAKURA"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "IVINERAL WATER (bundling) 5k"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 5,
+  "score": 16,
+  "accuracy": 57.142857142857146
+}

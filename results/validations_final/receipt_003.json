@@ -1,0 +1,35 @@
+{
+  "receipt": "receipt_003.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "EGG TART"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": false,
+    "line_total": true,
+    "matched_name": "CHOCO CUS ARD PASTRY"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "REDBEAN BREAD"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 3,
+  "score": 16,
+  "accuracy": 80.0
+}

@@ -1,0 +1,35 @@
+{
+  "receipt": "receipt_020.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "TWIST STRAWBERRY DONUT"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "TLJ CROQUETTE"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "POTATO PEPPER BAGEL"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 3,
+  "score": 20,
+  "accuracy": 100.0
+}

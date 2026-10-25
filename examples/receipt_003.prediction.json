@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "name": "EGG TART",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "13000"
+    },
+    {
+      "name": "CHOCO CUSTARD PASTRY",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "24000"
+    },
+    {
+      "name": "REDBEAN BREAD",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "9000"
+    }
+  ],
+  "subtotal": null,
+  "total": "46000",
+  "cash": "50000",
+  "card": null,
+  "change": "4000",
+  "currency": null,
+  "tax": null,
+  "service_charge": null,
+  "discount": null
+}

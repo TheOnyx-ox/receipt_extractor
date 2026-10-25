@@ -1,0 +1,28 @@
+{
+  "receipt": "receipt_009.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "BLUS WANITA"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": false,
+    "matched_name": "SHOPPING BAG"
+  },
+  "subtotal": false,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 2,
+  "score": 13,
+  "accuracy": 81.25
+}

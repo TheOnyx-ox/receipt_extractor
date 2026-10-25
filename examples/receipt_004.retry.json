@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "name": "ADD CHICKEN BOX",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "100000"
+    }
+  ],
+  "subtotal": "100909",
+  "total": "111000",
+  "cash": "111000",
+  "card": null,
+  "change": null,
+  "currency": "IDR",
+  "tax": "10091",
+  "service_charge": null,
+  "discount": null
+}

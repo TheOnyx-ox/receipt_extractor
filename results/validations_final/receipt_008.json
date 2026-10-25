@@ -1,0 +1,21 @@
+{
+  "receipt": "receipt_008.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "BANABERRY FRESH CREAM CAK"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 1,
+  "score": 11,
+  "accuracy": 91.66666666666667
+}

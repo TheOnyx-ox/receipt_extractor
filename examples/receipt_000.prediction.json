@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "name": "JASMINE MT ( L )",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "24000"
+    },
+    {
+      "name": "COCONUT JELLY ( L )",
+      "unit_price": null,
+      "quantity": "1",
+      "line_total": "4000"
+    }
+  ],
+  "subtotal": "28000",
+  "total": "28000",
+  "cash": "100000",
+  "card": null,
+  "change": "72000",
+  "currency": null,
+  "tax": null,
+  "service_charge": null,
+  "discount": null
+}

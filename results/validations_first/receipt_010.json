@@ -1,0 +1,27 @@
+{
+  "receipt": "receipt_010.json",
+  "product-1": {
+    "name": false,
+    "unit_price": false,
+    "quantity": false,
+    "line_total": false
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "A.MINERAL GELAS"
+  },
+  "subtotal": true,
+  "total": false,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": false,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 2,
+  "score": 9,
+  "accuracy": 56.25
+}

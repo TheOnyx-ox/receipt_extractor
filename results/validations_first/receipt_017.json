@@ -1,0 +1,49 @@
+{
+  "receipt": "receipt_017.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "cashew nuts chkn"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "garlic pepper beef"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "red curry beef"
+  },
+  "product-4": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "phad thai"
+  },
+  "product-5": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "steamed rice"
+  },
+  "subtotal": false,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": false,
+  "service_charge": false,
+  "discount": true,
+  "num_products": 5,
+  "score": 20,
+  "accuracy": 71.42857142857143
+}

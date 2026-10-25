@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "name": "ICE BLACKCOFFE",
+      "unit_price": "82000",
+      "quantity": "2",
+      "line_total": "164000"
+    },
+    {
+      "name": "AVOCADO COFFEE",
+      "unit_price": "67000",
+      "quantity": "1",
+      "line_total": "67000"
+    },
+    {
+      "name": "CHICKEN KATSUIFF",
+      "unit_price": "56000",
+      "quantity": "1",
+      "line_total": "56000"
+    }
+  ],
+  "subtotal": "194000",
+  "total": "174600",
+  "cash": "200000",
+  "card": null,
+  "change": "28400",
+  "currency": "IDR",
+  "tax": null,
+  "service_charge": null,
+  "discount": "19400"
+}

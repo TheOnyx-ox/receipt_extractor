@@ -1,0 +1,28 @@
+{
+  "receipt": "receipt_000.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "JASMINE MT ( L )"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "COCONUT JELLY ( L )"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 2,
+  "score": 14,
+  "accuracy": 87.5
+}

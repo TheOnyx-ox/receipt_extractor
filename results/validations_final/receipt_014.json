@@ -1,0 +1,56 @@
+{
+  "receipt": "receipt_014.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Goblin's Mace"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": false,
+    "matched_name": "Mozarella Hot Dog"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Chili Pepper Croquette"
+  },
+  "product-4": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Cheese Croquette"
+  },
+  "product-5": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Plastik Amook"
+  },
+  "product-6": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Plastik Putih Take Away"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 6,
+  "score": 30,
+  "accuracy": 93.75
+}

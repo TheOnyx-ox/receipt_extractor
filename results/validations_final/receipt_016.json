@@ -1,0 +1,28 @@
+{
+  "receipt": "receipt_016.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": false,
+    "matched_name": "AMBUSH DBL CHS"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "AMBUSH CHS BUR"
+  },
+  "subtotal": false,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": false,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 2,
+  "score": 11,
+  "accuracy": 68.75
+}

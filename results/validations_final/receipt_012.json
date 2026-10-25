@@ -1,0 +1,28 @@
+{
+  "receipt": "receipt_012.json",
+  "product-1": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Lemon Tea (L)"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": true,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Caramel Small"
+  },
+  "subtotal": false,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 2,
+  "score": 15,
+  "accuracy": 93.75
+}

@@ -1,0 +1,21 @@
+{
+  "receipt": "receipt_007.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": false,
+    "matched_name": "CINNAMON SUGAR"
+  },
+  "subtotal": false,
+  "total": false,
+  "cash": true,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 1,
+  "score": 8,
+  "accuracy": 66.66666666666667
+}

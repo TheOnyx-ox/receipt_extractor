@@ -1,0 +1,56 @@
+{
+  "receipt": "receipt_011.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "RedVelvet Cheese Slc"
+  },
+  "product-2": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Chicken Baked Rice"
+  },
+  "product-3": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Fish n Chips"
+  },
+  "product-4": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Mushroom Soup"
+  },
+  "product-5": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Chamomile"
+  },
+  "product-6": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": true,
+    "matched_name": "Iced Tea"
+  },
+  "subtotal": true,
+  "total": true,
+  "cash": true,
+  "card": true,
+  "change": false,
+  "tax": false,
+  "service_charge": true,
+  "discount": false,
+  "num_products": 6,
+  "score": 23,
+  "accuracy": 71.875
+}

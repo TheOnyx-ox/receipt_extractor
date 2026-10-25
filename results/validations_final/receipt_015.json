@@ -1,0 +1,21 @@
+{
+  "receipt": "receipt_015.json",
+  "product-1": {
+    "name": true,
+    "unit_price": false,
+    "quantity": true,
+    "line_total": false,
+    "matched_name": "Propolis Cair"
+  },
+  "subtotal": false,
+  "total": false,
+  "cash": false,
+  "card": true,
+  "change": true,
+  "tax": true,
+  "service_charge": true,
+  "discount": true,
+  "num_products": 1,
+  "score": 7,
+  "accuracy": 58.333333333333336
+}
