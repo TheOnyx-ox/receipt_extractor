@@ -133,4 +133,4 @@ def extract_with_retry(image: Path, first_dir: Path, retry_dir: Path):
     os.makedirs(LOG_PATH, exist_ok=True)
     with open(LOG_PATH / "retries.jsonl", "a") as f:
         f.write(json.dumps(record) + "\n")
-    return final, record
+    return first, final, record
